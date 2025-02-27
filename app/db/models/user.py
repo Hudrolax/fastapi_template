@@ -1,9 +1,8 @@
 from sqlalchemy import String, Integer
 from sqlalchemy.orm import Mapped, mapped_column
-from passlib.context import CryptContext
+
 from .base_model import BaseORMModel
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserORM(BaseORMModel):
     __tablename__ = "users"

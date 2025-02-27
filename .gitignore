@@ -164,4 +164,6 @@ service_account_key.json
 
 app/tmp/
 
-.aichat*
+*.aichat
+include.txt
+output.txt

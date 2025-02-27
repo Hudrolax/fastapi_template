@@ -9,7 +9,7 @@ from services.user_service import UserService
 from .dependencies import get_user_service
 from domain.domain_user import DomainUser
 from domain.exceptions import RepositoryException
-from config import SECRET
+from config.config import SECRET
 
 
 api_key_header = APIKeyHeader(name="TOKEN", auto_error=False)

@@ -1,24 +1,23 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Annotated, Type
+from typing import Annotated
 from domain.domain_user import DomainUser
-from domain.base_domain_model import BaseDomainModel
-from db.models.base_model import BaseORMModel
 from db.models.user import UserORM
 from db.db import get_db
 from services.user_service import UserService
-from repositories.sqlalchemy_repo import SQLAlchemyRepository
+from repositories.user_repo import UserSQLAlchemyRepo
 from util.crypto_hash import CryptoHash
 
 
-def sqlalchemy_repository_factory(
-    db: AsyncSession,
-    orm_class: Type[BaseORMModel],
-    domain_model: Type[BaseDomainModel],
-) -> SQLAlchemyRepository:
-    return SQLAlchemyRepository(db, orm_class, domain_model)
+def user_sqlalchemy_repository_factory(
+    db: Annotated[AsyncSession, Depends(get_db)]
+) -> UserSQLAlchemyRepo:
+    return UserSQLAlchemyRepo(db, UserORM, DomainUser)
 
 
-def get_user_service(db: Annotated[AsyncSession, Depends(get_db)]) -> UserService:
-    repository = sqlalchemy_repository_factory(db, orm_class=UserORM, domain_model=DomainUser)
-    return UserService(repository, crypto_hash=CryptoHash())
+def get_user_service(repo_factory = Depends(user_sqlalchemy_repository_factory)) -> UserService:
+    repository = repo_factory()
+    return UserService(
+        repository = repository,
+        crypto_hash = CryptoHash()
+    )

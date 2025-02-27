@@ -5,7 +5,6 @@ from api.auth import check_token, create_jwt_token
 from domain.domain_user import DomainUser
 from .schemas.user_schema import UserCreate, UserRead, UserToken, UserUpdatePassword
 from ..dependencies import get_user_service
-from services.base_service import AbstractService
 from services.user_service import UserService
 from domain.exceptions import DoubleFoundError, NotFoundError, RepositoryException
 
@@ -19,13 +18,13 @@ router = APIRouter(
 
 @router.post("/", response_model=UserRead)
 async def create_user(
-    data: UserCreate, service: Annotated[AbstractService, Depends(get_user_service)]
+    data: UserCreate, service: Annotated[UserService, Depends(get_user_service)]
 ) -> UserRead | None:
     try:
         user = await service.create(data=data.model_dump())
         return UserRead.model_validate(user)
-    except DoubleFoundError:
-        raise HTTPException(422, f"User with username {data.username} already exists.")
+    except DoubleFoundError as ex:
+        raise HTTPException(422, str(ex))
 
 
 @router.post("/login", response_model=UserToken)

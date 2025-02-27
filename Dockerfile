@@ -21,14 +21,14 @@ RUN python -m venv /py && \
     linux-headers \
     python3-dev \
     libffi-dev \
-    musl-dev \ 
+    musl-dev \
     postgresql-dev && \
   apk add --no-cache postgresql-libs \
     postgresql-client && \
-  /py/bin/pip install --upgrade pip && \
   /py/bin/pip install --no-cache-dir -r /tmp/requirements.txt && \
-  if [ $DEV = "true" ]; \
-  then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
+  if [ "$DEV" = "true" ]; then \
+    /py/bin/pip install -r /tmp/requirements.dev.txt && \
+    /py/bin/mypy --install-types --non-interactive; \
   fi && \
   apk del .build-deps && \
   rm -rf /tmp && \

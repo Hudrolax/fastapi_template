@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from passlib.context import CryptContext
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -10,8 +12,8 @@ class AbstractCrypto(ABC):
         ...
 
     @abstractmethod
-    def verify(self, value: str, hash: str) -> bool:
-        ...
+    def verify(self, value: str, hash: str) -> bool: ...
+
 
 class CryptoHash(AbstractCrypto):
 

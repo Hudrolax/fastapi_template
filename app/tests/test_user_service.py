@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import AsyncMock, Mock
+
 from domain.domain_user import DomainUser
 from domain.exceptions import DoubleFoundError, NotFoundError
 from services.user_service import UserService

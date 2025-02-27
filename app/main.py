@@ -1,12 +1,14 @@
-import asyncio
+import config.logger
 import logging
+import asyncio
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn.config import Config
 from uvicorn.server import Server
-from api.router import router
 
+from api.router import router
 from db.db import sessionmanager
 
 

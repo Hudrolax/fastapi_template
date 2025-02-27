@@ -1,7 +1,9 @@
 import asyncio
 import logging
+
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.future import select
+
 from db.db import sessionmanager
 
 logger = logging.getLogger(__name__)
@@ -14,7 +16,7 @@ async def wait_for_db():
     wait_time = 1
 
     print("\033[32mWait for DB was ready.")
-    for i in range(num_retries):
+    for _ in range(num_retries):
         try:
             # Выполняем простой запрос, чтобы проверить жива ли база
             async with sessionmanager.session() as session:
@@ -28,8 +30,6 @@ async def wait_for_db():
         except Exception as exc:
             logger.exception(f"Unexpected error while waiting for DB: {exc}")
             raise
-        finally:
-            await sessionmanager.close()
 
     logger.error(
         f"\033[31mCouldn't connect to database after {num_retries} attempts, exiting...\033[0m")

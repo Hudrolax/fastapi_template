@@ -1,11 +1,10 @@
-from abc import ABC, abstractmethod
-from domain.base_domain_model import  TDomain
-from typing import TypeVar, Generic, List, Optional
+from typing import Generic, Optional, Protocol, Any, Sequence
+
+from domain.base_domain_model import TDomain
 
 
-class AbstractRepository(ABC, Generic[TDomain]):
-    @abstractmethod
-    async def create(self, data: dict) -> TDomain:
+class ICreateRepository(Protocol, Generic[TDomain]):
+    async def create(self, data: dict[str, Any]) -> TDomain:
         """
         Asynchronously creates a new record in the repository.
 
@@ -19,10 +18,11 @@ class AbstractRepository(ABC, Generic[TDomain]):
             DoubleFoundError: If a duplicate entry is found in the repository.
             RepositoryException: If any other repository error occurs.
         """
-        pass
+        ...
 
-    @abstractmethod
-    async def read(self, filters: Optional[dict]) -> TDomain:
+
+class IReadRepository(Protocol, Generic[TDomain]):
+    async def read(self, filters: Optional[dict[str, Any]] = None) -> TDomain:
         """
         Reads data using the specified filters.
 
@@ -36,10 +36,13 @@ class AbstractRepository(ABC, Generic[TDomain]):
             NotFoundError: If no records are found.
             DoubleFoundError: If more than one record is found.
         """
-        pass
+        ...
 
-    @abstractmethod
-    async def list(self, filters: Optional[dict], order_columns: Optional[list]) -> List[TDomain]:
+
+class IListRepository(Protocol, Generic[TDomain]):
+    async def list(
+        self, filters: Optional[dict[str, Any]] = None, order_columns: Optional[list[Any]] = None
+    ) -> Sequence[TDomain]:
         """
         Asynchronously retrieves a list of domain objects based on provided filters and order columns.
 
@@ -54,10 +57,11 @@ class AbstractRepository(ABC, Generic[TDomain]):
             SQLAlchemyError: If there is an error executing the repository query.
             ValidationError: If there is an error validating the domain model.
         """
-        pass
+        ...
 
-    @abstractmethod
-    async def update(self, filters: Optional[dict], data: dict) -> List[TDomain]:
+
+class IUpdateRepository(Protocol, Generic[TDomain]):
+    async def update(self, data: dict[str, Any], filters: Optional[dict[str, Any]] = None) -> Sequence[TDomain]:
         """
         Updates records in the repository based on the provided filters and data.
 
@@ -71,10 +75,11 @@ class AbstractRepository(ABC, Generic[TDomain]):
         Raises:
             RepositoryException: If an error occurs during the repository operation.
         """
-        pass
+        ...
 
-    @abstractmethod
-    async def delete(self, filters: Optional[dict]) -> int:
+
+class IDeleteRepository(Protocol, Generic[TDomain]):
+    async def delete(self, filters: dict[str, Any]) -> int:
         """
         Deletes records from the repository based on the provided filters.
 
@@ -87,8 +92,18 @@ class AbstractRepository(ABC, Generic[TDomain]):
         Raises:
             RepositoryException: If an error occurs during the repository operation.
         """
-        pass
+        ...
 
 
+class ICountRepository(Protocol, Generic[TDomain]):
+    async def count(self, filters: Optional[dict[str, Any]] = None) -> int:
+        """
+        Returns records count from the repository based on the provided filters.
 
-TRepo = TypeVar("TRepo", bound=AbstractRepository)
+        Args:
+            filters (Optional[dict]): A dictionary of filters to apply to the query.
+
+        Returns:
+            int: The number of records.
+        """
+        ...

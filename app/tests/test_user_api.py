@@ -1,6 +1,8 @@
 from typing import cast
+
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+
 from domain.domain_user import DomainUser
 from domain.exceptions import DoubleFoundError, NotFoundError, RepositoryException
 from api.auth import check_token

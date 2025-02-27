@@ -4,6 +4,7 @@
 # alembic revision --autogenerate -m "your message here"
 import contextlib
 from typing import Any, AsyncIterator
+
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncSession,
@@ -12,7 +13,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import declarative_base
 
-from config import DATABASE_URL
+from config.config import DATABASE_URL
 
 
 Base = declarative_base()
