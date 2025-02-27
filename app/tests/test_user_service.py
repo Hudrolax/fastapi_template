@@ -10,12 +10,10 @@ from util.crypto_hash import AbstractCrypto
 async def test_create_success():
     # Мокаем репозиторий:
     repo = AsyncMock()
-    # При попытке прочитать пользователя генерируем NotFoundError,
-    # что означает — пользователь с таким именем отсутствует.
-    repo.read = AsyncMock(side_effect=NotFoundError("User not found"))
     # При создании пользователя репозиторий возвращает объект DomainUser.
     created_user = DomainUser(id=1, username="test", hashed_password="fake_hashed_password")
     repo.create = AsyncMock(return_value=created_user)
+    repo.exists = AsyncMock(return_value=False)
 
     # Создаем сервис, передавая в него мокаемый репозиторий.
     service = UserService(repository=repo, crypto_hash=Mock())
@@ -24,7 +22,7 @@ async def test_create_success():
     result = await service.create(data=input_data)
 
     # Проверяем, что метод read был вызван с нужным аргументом.
-    repo.read.assert_called_once_with(filters={'username':"test"})
+    repo.exists.assert_called_once_with(username=input_data['username'])
     # Проверяем, что метод create был вызван.
     repo.create.assert_called_once()
     # Результат должен быть объектом DomainUser с корректными данными.
@@ -52,7 +50,7 @@ async def test_create_double_found():
     with pytest.raises(DoubleFoundError):
          await service.create(data=input_data)
 
-    repo.read.assert_called_once_with(filters={'username':"test"})
+    repo.exists.assert_called_once_with(username=input_data['username'])
     repo.create.assert_not_called()
 
 @pytest.mark.asyncio

@@ -14,7 +14,7 @@ class FakeUserService():
     async def create(self, data: dict) -> DomainUser:
         # Если имя пользователя "exists", симулируем наличие такого пользователя
         if data["username"] == "exists":
-            raise DoubleFoundError
+            raise DoubleFoundError('already exists')
         # Иначе возвращаем созданного пользователя
         return DomainUser(id=1, username=data["username"], hashed_password="fake_hashed")
 
